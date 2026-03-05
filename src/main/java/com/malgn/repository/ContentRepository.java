@@ -1,10 +1,10 @@
 package com.malgn.repository;
 
 import com.malgn.entity.Content;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface ContentRepository extends JpaRepository<Content,Long> {
-    List<Content> findAllByUserId(Long userId);
+    Page<Content> findAllByCreatedBy(String createdBy, Pageable pageable);
 }
