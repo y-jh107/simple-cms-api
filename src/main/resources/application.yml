@@ -47,3 +47,7 @@ logging:
     root: info
     web: info
     com.malgn: debug
+
+## security
+jwt:
+  secret: ${JWT_SECRET}
