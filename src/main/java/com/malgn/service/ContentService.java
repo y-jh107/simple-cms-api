@@ -31,10 +31,10 @@ public class ContentService {
         this.userRepository = userRepository;
     }
 
-    public ContentResponse createContent(ContentCreateRequest request, Long userId) {
-        User user =  userRepository.findById(userId)
+    public ContentResponse createContent(ContentCreateRequest request, String username) {
+        User user =  userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(
-                        String.format("해당 아이디(%d)를 가진 사용자를 찾을 수 없습니다.", userId)
+                        String.format("해당 이름(%s)을 가진 사용자를 찾을 수 없습니다.", username)
                 ));
 
         Content content = Content.builder()
@@ -89,6 +89,11 @@ public class ContentService {
 
     @Transactional(readOnly = true)
     public Page<ContentResponse> getContentByCreatedBy(String username, int page, int size) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(
+                        String.format("해당 이름(%s)을 가진 사용자를 찾을 수 없습니다.", username)
+                ));
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
         return contentRepository.findAllByCreatedBy(username, pageable)
