@@ -31,7 +31,7 @@ public class Content {
 
     @Column(name = "view_count", nullable = false)
     @Builder.Default
-    private Long viewCount;
+    private Long viewCount = 0L;
 
     @CreatedDate
     @Column(name = "created_date", nullable = false)
