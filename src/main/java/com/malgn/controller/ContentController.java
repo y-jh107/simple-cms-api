@@ -8,6 +8,7 @@ import com.malgn.service.ContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class ContentController {
     })
     public ResponseEntity<ContentResponse> createContent(
             @AuthenticationPrincipal CmsUserDetails userDetails,
-            @RequestBody ContentCreateRequest request
+            @RequestBody @Valid ContentCreateRequest request
     ) {
         ContentResponse createdContent = contentService.createContent(request, userDetails.getUsername());
 

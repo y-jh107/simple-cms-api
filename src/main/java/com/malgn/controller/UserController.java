@@ -7,6 +7,7 @@ import com.malgn.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +51,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "성공")
     })
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest request) {
         UserResponse user = userService.createUser(request);
         return ResponseEntity.ok(user);
     }
@@ -64,7 +65,7 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUser(
             @AuthenticationPrincipal CmsUserDetails userDetails,
             @PathVariable Long userId,
-            @RequestBody UserRequest request) {
+            @RequestBody @Valid UserRequest request) {
         UserResponse user = userService.updateUser(userDetails, userId, request);
         return ResponseEntity.ok(user);
     }
