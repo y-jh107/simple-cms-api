@@ -65,9 +65,7 @@ public class UserService {
     }
 
     public UserResponse updateUser(CmsUserDetails userDetails, Long userId, UserRequest request) {
-        if (userDetails.getAuthorities().stream()
-                .noneMatch(authority -> authority.getAuthority().equals(Role.ROLE_ADMIN.name()))
-        && !userDetails.getId().equals(userId)) {
+        if (!userDetails.isAdmin() && !userDetails.getId().equals(userId)) {
             throw new NotAuthorizedException("권한이 없습니다.");
         }
 
