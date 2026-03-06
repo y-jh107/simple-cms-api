@@ -18,6 +18,7 @@ public class EntityDtoMapper {
 
     public static UserResponse toDto(User user) {
         return UserResponse.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .build();

@@ -61,9 +61,11 @@ public class SecurityConfiguration {
                 .permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/user")
                 .permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/user/{userId}")
+                .requestMatchers(HttpMethod.GET, "/api/v1/user/**")
                 .permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/user/{userId}")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/user/**")
+                .authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/user/**")
                 .hasRole("ADMIN")
                 .anyRequest().authenticated())
             .exceptionHandling(exceptionHandling ->
