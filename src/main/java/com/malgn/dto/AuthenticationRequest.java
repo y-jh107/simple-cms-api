@@ -1,10 +1,6 @@
 package com.malgn.dto;
 
-import lombok.Builder;
-
-@Builder
-public record UserResponse(
-        Long id,
+public record AuthenticationRequest(
         String username,
         String password
 ) {}

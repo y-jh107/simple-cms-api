@@ -2,12 +2,15 @@ package com.malgn.controller;
 
 import com.malgn.dto.UserRequest;
 import com.malgn.dto.UserResponse;
+import com.malgn.security.CmsUserDetails;
 import com.malgn.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -58,12 +61,16 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "사용자 없음")
     })
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long userId, @RequestBody UserRequest request) {
-        UserResponse user = userService.updateUser(userId, request);
+    public ResponseEntity<UserResponse> updateUser(
+            @AuthenticationPrincipal CmsUserDetails userDetails,
+            @PathVariable Long userId,
+            @RequestBody UserRequest request) {
+        UserResponse user = userService.updateUser(userDetails, userId, request);
         return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "사용자 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "성공"),

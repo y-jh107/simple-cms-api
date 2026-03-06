@@ -6,9 +6,11 @@ import com.malgn.dto.ContentUpdateRequest;
 import com.malgn.entity.Content;
 import com.malgn.entity.User;
 import com.malgn.exception.ContentNotFoundException;
+import com.malgn.exception.NotAuthorizedException;
 import com.malgn.exception.UserNotFoundException;
 import com.malgn.repository.ContentRepository;
 import com.malgn.repository.UserRepository;
+import com.malgn.security.CmsUserDetails;
 import com.malgn.util.EntityDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,20 +50,28 @@ public class ContentService {
         return EntityDtoMapper.toDto(content);
     }
 
-    public void deleteContent(Long contentId) {
+    public void deleteContent(CmsUserDetails userDetails, Long contentId) {
         Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new ContentNotFoundException(
                         String.format("해당 아이디(%d)를 가진 컨텐츠를 찾을 수 없습니다.",  contentId)
                 ));
+
+        if (!userDetails.isAdmin() && !content.getCreatedBy().equals(userDetails.getUsername())) {
+            throw new NotAuthorizedException("게시글 작성자만 삭제할 수 있습니다.");
+        }
 
         contentRepository.deleteById(content.getId());
     }
 
-    public ContentResponse updateContent(Long contentId, ContentUpdateRequest request) {
+    public ContentResponse updateContent(CmsUserDetails userDetails, Long contentId, ContentUpdateRequest request) {
         Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new ContentNotFoundException(
                         String.format("해당 아이디(%d)를 가진 컨텐츠를 찾을 수 없습니다.",  contentId)
                 ));
+
+        if (!userDetails.isAdmin() && !content.getCreatedBy().equals(userDetails.getUsername())) {
+            throw new NotAuthorizedException("게시글 작성자만 수정할 수 있습니다.");
+        }
 
         // 부분 수정을 허용하기 위해 null 체크 로직을 사용했습니다.
         if (request.title() != null) {

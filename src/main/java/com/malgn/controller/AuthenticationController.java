@@ -1,5 +1,7 @@
 package com.malgn.controller;
 
+import com.malgn.dto.AuthenticationRequest;
+import com.malgn.dto.AuthenticationResponse;
 import com.malgn.dto.UserResponse;
 import com.malgn.security.JwtUtil;
 import com.malgn.service.UserService;
@@ -48,16 +50,16 @@ public class AuthenticationController {
     ) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authRequest.getUsername(), authRequest.getPassword()
+                    authRequest.username(), authRequest.password()
             ));
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.username());
 
             UserResponse userResponse = userService.getUserByUsername(userDetails.getUsername());
 
             return ResponseEntity.ok(
                     AuthenticationResponse.builder()
-                            .jwt(jwtTokenUtil.generateToken(userDetails, userResponse.getId()))
+                            .jwt(jwtTokenUtil.generateToken(userDetails, userResponse.id()))
                             .build()
             );
         } catch (BadCredentialsException e) {
