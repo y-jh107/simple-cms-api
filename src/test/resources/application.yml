@@ -30,24 +30,18 @@ spring:
     virtual:
       enabled: on
 
-
 ## p6spy
 decorator:
   datasource:
     p6spy:
-      enable-logging: on
+      enable-logging: off
 
 ## logging
 logging:
-  charset:
-    console: UTF-8
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:%-5p} ${PID} --- [%15.15t] %-40.40logger{39} :%06L : %m%n"
   level:
-    root: info
-    web: info
+    root: warn
     com.malgn: debug
 
 ## security
 jwt:
-  secret: ${JWT_SECRET}
+  secret: dGVzdF9zZWNyZXRfa2V5X2Zvcl90ZXN0aW5nX3B1cnBvc2VzX29ubHlfYmFzZTY0X2VuY29kZWQ=
