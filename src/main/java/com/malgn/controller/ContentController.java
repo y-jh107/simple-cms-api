@@ -3,6 +3,7 @@ package com.malgn.controller;
 import com.malgn.dto.ContentCreateRequest;
 import com.malgn.dto.ContentResponse;
 import com.malgn.dto.ContentUpdateRequest;
+import com.malgn.security.CmsUserDetails;
 import com.malgn.service.ContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,9 +30,11 @@ public class ContentController {
             @ApiResponse(responseCode = "201", description = "성공"),
             @ApiResponse(responseCode = "404", description = "사용자 없음")
     })
-    public ResponseEntity<ContentResponse> createContent(@RequestBody ContentCreateRequest request) {
-        String username = request.createdBy();
-        ContentResponse createdContent = contentService.createContent(request, username);
+    public ResponseEntity<ContentResponse> createContent(
+            @AuthenticationPrincipal CmsUserDetails userDetails,
+            @RequestBody ContentCreateRequest request
+    ) {
+        ContentResponse createdContent = contentService.createContent(request, userDetails.getUsername());
 
         return ResponseEntity.ok(createdContent);
     }
@@ -73,8 +77,12 @@ public class ContentController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "컨텐츠 없음")
     })
-    public ResponseEntity<ContentResponse> updateContent(@PathVariable Long contentId, @RequestBody ContentUpdateRequest request) {
-        ContentResponse content = contentService.updateContent(contentId, request);
+    public ResponseEntity<ContentResponse> updateContent(
+            @AuthenticationPrincipal CmsUserDetails userDetails,
+            @PathVariable Long contentId,
+            @RequestBody ContentUpdateRequest request
+    ) {
+        ContentResponse content = contentService.updateContent(userDetails, contentId, request);
         return ResponseEntity.ok(content);
     }
 
@@ -84,8 +92,11 @@ public class ContentController {
             @ApiResponse(responseCode = "204", description = "성공"),
             @ApiResponse(responseCode = "404", description = "컨텐츠 없음")
     })
-    public ResponseEntity<Void> deleteContent(@PathVariable Long contentId) {
-        contentService.deleteContent(contentId);
+    public ResponseEntity<Void> deleteContent(
+            @AuthenticationPrincipal CmsUserDetails userDetails,
+            @PathVariable Long contentId
+    ) {
+        contentService.deleteContent(userDetails, contentId);
         return ResponseEntity.noContent().build();
     }
 }
