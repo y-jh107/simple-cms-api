@@ -59,7 +59,7 @@ public class AuthenticationController {
 
             return ResponseEntity.ok(
                     AuthenticationResponse.builder()
-                            .jwt(jwtTokenUtil.generateToken(userDetails, userResponse.getId()))
+                            .jwt(jwtTokenUtil.generateToken(userDetails, userResponse.id()))
                             .build()
             );
         } catch (BadCredentialsException e) {
